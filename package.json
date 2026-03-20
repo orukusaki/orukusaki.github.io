@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dfu": "^0.1.5"
+  },
+  "scripts": {
+    "serve": "serve -l 8080"
+  }
+}
