@@ -1,0 +1,56 @@
+// 
+// Styles
+// 
+
+// Import variables - uses project's _variables.scss, which pulls in our font overrides
+// before Bootstrap is loaded, so Bootstrap's !default values respect our choices
+@import "./variables";
+
+// Import Bootstrap
+@import "../../themes/zola-grayscale/sass/css/bootstrap/scss/bootstrap";
+
+// Global CSS
+@import "../../themes/zola-grayscale/sass/css/global";
+
+// Components
+@import "../../themes/zola-grayscale/sass/css/components/navbar";
+@import "../../themes/zola-grayscale/sass/css/components/buttons";
+
+// Sections
+@import "../../themes/zola-grayscale/sass/css/sections/masthead";
+@import "../../themes/zola-grayscale/sass/css/sections/about";
+@import "../../themes/zola-grayscale/sass/css/sections/projects";
+@import "../../themes/zola-grayscale/sass/css/sections/signup";
+@import "../../themes/zola-grayscale/sass/css/sections/contact";
+@import "../../themes/zola-grayscale/sass/css/sections/footer";
+
+
+// 
+// Masthead
+// 
+
+.masthead {
+    h1 {
+        line-height: 4rem;
+    }
+
+    @include media-breakpoint-up(md) {
+        h1 {
+            line-height: 5rem;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+        h1 {
+            line-height: 8rem;
+        }
+    }
+}
+
+.about-section h2 {
+    font-family: $font-family-special;
+    font-size: 5rem;
+    line-height: 5rem;
+    letter-spacing: 0.8rem;
+    background-clip: text;
+}

@@ -1,0 +1,256 @@
+{% extends "zola-grayscale/templates/index.html" %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{{ get_url(path="css/custom.css") }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+{% endblock extra_head %}
+
+
+    {% block masthead %}
+
+    {% endblock masthead %}
+
+{% block about_title %}Quántica{% endblock about_title %}
+{% block about_description %}
+Quantizer, chord sequencer, and arpeggiator for Eurorack. With it's intuitive interface and progression based workflow, This Machine puts music theory at your fingertips.
+{% endblock about_description %}
+
+{% block about_image %}
+<img class="img-fluid" src="{{ get_url(path="assets/img/quantica/angled.png") }}" alt="quântica" />
+{% endblock about_image %}
+
+
+{% block projects %}
+    <!-- <div class="row my-5 text-center">
+        <h2>Features</h2>
+    </div> -->
+    <!-- Projects-->
+    <section class="p-2 p-lg-5 bg-light" id="{% block projects_id %}projects{% endblock projects_id %}">
+
+        <div class="container px-0 px-lg-5">
+
+            <div class="row gx-0 mb-3 justify-content-center rounded">
+                <div class="col-lg-6 text-center h-100 ">
+                    <img class="img-fluid" src="{{ get_url(path="assets/img/quantica/screenshot-main.jpg") }}" alt="...">
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center h-100 project">
+                        <div class="d-flex h-100 bg-white">
+                            <div class="project-text p-5 my-auto text-center text-lg-left">
+                                <h4>4 Channel Quantizer</h4>
+                                <p class="mb-0 text-muted">
+                                Each channel has a CV input with selectable range and a trigger/gate input. Channels can operate independently or be normalled together to create complex chords and harmonies.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row gx-0 mb-3 justify-content-center">
+                <div class="col-lg-6">
+                    <img class="img-fluid" src="{{ get_url(path="assets/img/quantica/screenshot-sequencer.jpg") }}" alt="...">
+                </div>
+                <div class="col-lg-6 order-lg-first">
+                    <div class="text-center h-100 project">
+                        <div class="d-flex h-100 bg-white">
+                            <div class="project-text p-5 my-auto text-center text-lg-right">
+                                <h4>Chord Sequencer</h4>
+                                <p class="mb-0 text-muted">
+                                Quântica's inbuilt chord sequencer lets you record and playback patterns of up to 8 steps. The sequencer can be triggered by an external clock signal, with a configurable clock divider.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-3 justify-content-center">
+                <div class="col-lg-6">
+                    <img class="img-fluid" src="{{ get_url(path="assets/img/quantica/screenshot-arp.jpg") }}" alt="...">
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center h-100 project">
+                        <div class="d-flex h-100 bg-white">
+                            <div class="project-text p-5 my-auto text-center text-lg-left">
+                                <h4>Arpeggiator</h4>
+                                <p class="mb-0 text-muted">
+                                Each channel has an arpeggiator which is applied to the output note after quantization. Use an LFO to control the inversion of the chord, or use the normalisation to create more complex patterns
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-3 justify-content-center">
+                <div class="col-lg-6">
+                    <img class="img-fluid" src="{{ get_url(path="assets/img/quantica/screenshot-map.jpg") }}" alt="...">
+                </div>
+                <div class="col-lg-6 order-lg-first">
+                    <div class="text-center h-100 project">
+                        <div class="d-flex h-100 bg-white">
+                            <div class="project-text p-5 my-auto text-center text-lg-right">
+                                <h4>Chord Map</h4>
+                                <p class="mb-0 text-muted">
+                                With an intelligent chord suggestion engine, Quântica makes it easy and fast to build great sounding chord progressions. Use the chord map to find inspiration for your next composition.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-3 justify-content-center">
+                <div class="col-lg-6">
+                    <img class="img-fluid" src="{{ get_url(path="assets/img/quantica/screenshot-key.jpg") }}" alt="...">
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center h-100 project">
+                        <div class="d-flex h-100 bg-white">
+                            <div class="project-text p-5 my-auto text-center text-lg-right">
+                                <h4>Key and Chord Library</h4>
+                                <p class="mb-0 text-muted">
+                                With an inbuilt understanding of key and chord structure, and an intuative, responsive UI, Quântica is your guide to generative music.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </section>
+
+    <!-- <div class="row my-5 text-center">
+        <h2>Info</h2>
+    </div> -->
+    <section class="bg-light p-2 p-lg-5 ">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-0 mb-4 mb-lg-5 align-items-center">
+                <div class="col-xl-6">
+                    <div id="product-carousel" class="carousel slide">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                            <img src="{{ get_url(path="assets/img/quantica/carousel/0001.jpg") }}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                            <img src="{{ get_url(path="assets/img/quantica/carousel/0002.jpg") }}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                            <img src="{{ get_url(path="assets/img/quantica/carousel/0003.jpg") }}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                            <img src="{{ get_url(path="assets/img/quantica/carousel/0004.jpg") }}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                            <img src="{{ get_url(path="assets/img/quantica/carousel/0005.jpg") }}" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#product-carousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#product-carousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-xl-6 bg-white p-5">
+                    <div class="container">
+
+                        <div class="row gx-0 mb-3 justify-content-center">
+                            <h4>Features</h4>
+                            <ul>
+                                <li><strong>4 independent quantizer channels</strong> which can also be chained to generate chords and harmonies</li>
+                                <li><strong>1.28" touchscreen interface</strong> with an intuitive and highly responsive custom UI</li>
+                                <li><strong>Chord progression-based workflow</strong>, helps users quickly find chords that fit with a chosen key</li>
+                                <li><strong>Chord suggestion engine</strong> guides users towards chord sequences that will work well harmonically</li>
+                                <li><strong>Chord sequencer</strong> for storing and playing chord sequences. Externally clockable</li>
+                                <li><strong>Arpeggiator</strong> for each channel, that works alongside quantization and chord functions</li>
+                                <li><strong>Hardware buttons for the most common functions</strong>, plus a rotary encoder, allowing most functions to be accessed without touching the screen</li>
+                                <li><strong>Extensive library of keys and chord types</strong></li>
+                                <li><strong>USB-C port</strong> for firmware updates</li>
+                            </ul>
+                        </div>
+
+                        <div class="row text-left text-lg-left py-3">
+                            <h4>Specs</h4>
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Width</th>
+                                        <td>12 HP</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Depth</th>
+                                        <td>25mm</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Power</th>
+                                        <td>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">+12V</th>
+                                                        <td>10mA</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">-12V</th>
+                                                        <td>10mA</td>
+                                                    </tr>
+                                                                                    <tr>
+                                                        <th scope="row">+5V</th>
+                                                        <td>80mA</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                
+                            </table>
+                            <p>Assembled and tested in Sheffield, UK</p>
+                        </div>
+                        <div class="row text-left text-lg-left py-3">
+                            <h4>Where to Buy</h4>
+                            <p>UK: Preorder at <a href="https://www.juno.co.uk/products/this-machine-quantica-4-channel-sequencing-quantizer-module/1146006-01/">Juno</a></p>
+                            <p>Distribution partners wanted for other regions. Please <a href="/contact">get in touch</a> if you would like to become a distributor.</p>
+                        </div>
+
+                        <div class="row text-left text-lg-left py-3">
+                            <h4>Support</h4>
+                            <ul>
+                                <li><a href="/quantica/quantica-manual.pdf">Manual</a></li>
+                                <li><a href="/quantica/firmware-updates">Firmware Updates</a></li>
+                            </ul>
+                        </div>
+
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section  class="bg-light p-2 p-lg-5 ">
+        <div class="container px-4 px-lg-5">
+            <div class="row align-items-center" style="aspect-ratio: 16 / 9;">
+                <iframe style="height: 100%;"
+                    src="https://www.youtube.com/embed/GZ21ieDTh_s"
+                    webkitallowfullscreen
+                    mozallowfullscreen
+                    allowfullscreen>
+                </iframe>
+            </div>
+</section>
+
+{% endblock projects %}
+
+{% block signup %}
+{% endblock signup %}
