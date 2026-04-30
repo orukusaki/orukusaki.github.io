@@ -1,9 +1,9 @@
 [[item]]
-name = "About"
-path = "#about"
+name = "Home"
+path = "/"
 [[item]]
 name = "Products"
-path = "#products"
+path = "/products/quantica"
 [[item]]
-name = "Contact"
-path = "#signup"
+name = "Support"
+path = "/support"

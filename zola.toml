@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://orukusaki.github.io/"
+base_url = "https://thismachinemodular.co.uk"
 
 theme = "zola-grayscale"
 
@@ -10,7 +10,7 @@ compile_sass = true
 build_search_index = false
 
 title = "This Machine"
-description = "The power to create"
+description = "Eurorack Synthesizer Modules"
 author = "This Machine Ltd"
 
 [markdown]

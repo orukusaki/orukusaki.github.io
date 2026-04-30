@@ -1,18 +1,9 @@
-[[contact]]
-name = "Instagram"
-address = "https://www.instagram.com/thismachinemodular"
-icon = "fa-instagram"
-[[contact]]
-name = "Email"
-address = """<a href="info@thismachinemodular.co.uk">info@thismachinemodular.co.uk</a>"""
-icon = "fa-envelope"
-[[contact]]
-name = "Address"
-address = "Sheffield UK"
-icon = "fa-map-marked-alt"
 [[social]]
-icon = "fa-instagram"
+icon = "fa-classic fa-envelope"
+url = "mailto:info@thismachinemodular.co.uk"
+[[social]]
+icon = "fa-brands fa-instagram"
 url = "https://www.instagram.com/thismachinemodular"
 [[social]]
-icon = "fa-youtube"
+icon = "fa-brands fa-youtube"
 url = "https://www.youtube.com/@ThisMachineModular"
