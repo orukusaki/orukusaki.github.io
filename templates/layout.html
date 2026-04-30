@@ -3,7 +3,6 @@
 {% import "macros/analytics.html" as analytics %}
 
 {% set navigation = load_data(path="navigation.toml") %}
-{% set contact = load_data(path="contact.toml") %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,9 +64,9 @@
                         <img src="{{ get_url(path="assets/img/logo.svg") }}" class="logo" alt="This Machine Logo">
                     </div>
                     <div class="row d-flex justify-content-center">
-                        {% for item in contact.social %}
-                        <a class="mx-2" href="{{ item.url | safe }}"><i class="{{ item.icon }} fa-xl" aria-hidden="true"></i></a>
-                        {% endfor %}
+                        <a class="mx-2" href="mailto:info@thismachinemodular.co.uk" aria-label="Email This Machine"><i class="fa-classic fa-envelope fa-xl" aria-hidden="true"></i></a>
+                        <a class="mx-2" href="https://www.instagram.com/thismachinemodular" aria-label="Visit This Machine on Instagram"><i class="fa-brands fa-instagram fa-xl" aria-hidden="true"></i></a>
+                        <a class="mx-2" href="https://www.youtube.com/@ThisMachineModular" aria-label="Visit This Machine on YouTube"><i class="fa-brands fa-youtube fa-xl" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 {% endblock contact_social %}
