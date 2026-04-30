@@ -5,5 +5,5 @@ path = "/"
 name = "Products"
 path = "/products/quantica"
 [[item]]
-name = "Support"
-path = "/support"
+name = "Firmware Updates"
+path = "/update"

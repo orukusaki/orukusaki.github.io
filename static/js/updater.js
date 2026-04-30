@@ -549,11 +549,10 @@
     "src/js/updater.js"() {
       init_dist();
       var STABLE_RELEASES = [
-        { version: "1.1.0", url: "./firmware/latest.bin" },
-        { version: "1.0.0", url: "./firmware/latest.bin" }
+        { version: "1.0.0", url: "./firmware/1.0.0-stable.bin" }
       ];
       var BETA_RELEASES = [
-        { version: "1.1.0-beta", url: "./firmware/beta.bin" }
+        { version: "1.1.0-beta", url: "./firmware/1.1.0-beta.bin" }
       ];
       var ui = {
         connectBtn: document.getElementById("connectBtn"),

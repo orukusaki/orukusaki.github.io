@@ -16,8 +16,8 @@
         </div>
     </section>
 
-<section id="updaterSection">
-    <div class="container p-4 p-lg-5 bg-light">
+<section class="p-2 p-lg-5 bg-light" id="updaterSection">
+    <div class="container px-0 px-lg-5">
 
         <div class="row gx-4 gx-lg-5">
 
@@ -25,14 +25,13 @@
                 <div class="card-body">
                     <h2 class="card-title mb-4">Step 1. Connect your device</h2>
                     <p class="card-text">This tool uses the WebUSB API, which is only supported in Chromium-based browsers. Please use Chrome, Edge, or Opera to use this tool.</p>
-                </div>
-                <div class="inline">
-                    <button id="connectBtn" type="button" class="btn btn-primary">Connect</button>
-                    <button id="disconnectBtn" type="button" class="btn btn-secondary" disabled>Disconnect</button>
-                    <span class="pill"><span id="deviceDot" class="dot"></span><span id="deviceLabel">No device connected</span></span>
+                    <div class="inline">
+                        <button id="connectBtn" type="button" class="btn btn-primary card-link">Connect</button>
+                        <button id="disconnectBtn" type="button" class="btn btn-secondary card-link" disabled>Disconnect</button>
+                        <span class="pill card-link"><span id="deviceDot" class="dot"></span><span id="deviceLabel">No device connected</span></span>
+                    </div>
                 </div>
             </div>
-
 
             <div class="card mb-4 p-5">
                 <div class="card-body">
@@ -52,10 +51,7 @@
                         <div class="tab-pane show active border border-light-subtle p-3" id="stable-tab-pane" role="tabpanel" aria-labelledby="stable-tab" tabindex="0">
 
                             <label for="stableVersion">Version</label>
-                            <select id="stableVersion" class="form-select form-select-lg">
-                                <option value="1.0.0" selected>1.0.0</option>
-                                <option value="1.1.0">1.1.0</option>
-                            </select>
+                            <select id="stableVersion" class="form-select form-select-lg"></select>
                             <input id="stableUrl" type="hidden"/>
 
                         </div>
@@ -75,12 +71,13 @@
             <div class="card mb-4 p-5">
                 <div class="card-body">
                     <h2 class="card-title mb-4">Step 3. Flash firmware</h2>
-                    <button id="flashBtn" type="button" class="btn btn-primary" disabled>Begin Update</button>
+                    <button id="flashBtn" type="button" class="btn btn-primary card-link" disabled>Begin Update</button>
                 </div>
             </div> 
 
             <div class="card mb-4 p-5">
-                <div class="progress" role="progressbar" aria-label="Flash progress">
+                <div class="card-body">
+                    <div class="progress" role="progressbar" aria-label="Flash progress">
                     <div class="progress-bar" style="width: 50%"></div>
                 </div>
                 <div id="statusText">Idle</div>
@@ -88,6 +85,7 @@
                     <summary class="small">log</summary>
                     <pre id="log"></pre>
                 </details>
+                </div>
             </div>
         </div>
     </div>  
