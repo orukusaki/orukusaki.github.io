@@ -49,10 +49,15 @@
 
 .about-section h2 {
     font-family: $font-family-special;
-    font-size: 5rem;
-    line-height: 5rem;
-    letter-spacing: 0.8rem;
+    font-size: 3rem;
+    line-height: 3rem;
+    letter-spacing: 0.2rem;
     background-clip: text;
+    @include media-breakpoint-up(sm) {
+        font-size: 5rem;
+        line-height: 5rem;
+        letter-spacing: 0.8rem;
+    }
 }
 
 .pill {
@@ -75,4 +80,8 @@
 
 .dot.connected {
     background: #1d9b58;
+}
+
+.contact-section img.logo {
+    width: 10rem;
 }
