@@ -1,418 +1,905 @@
-import { WebDFU, dfuCommands } from "dfu";
+(() => {
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __esm = (fn, res) => function __init() {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  };
+  var __commonJS = (cb, mod) => function __require() {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
 
-const DEFAULT_CHANNELS = [
-    {
-        id: "stable",
-        label: "Latest stable (1.0.0)",
-        url: "./firmware/latest.bin",
-    },
-    {
-        id: "beta",
-        label: "Latest beta (1.1.0-beta)",
-        url: "./firmware/beta.bin",
-    },
-];
-
-const ui = {
-    connectBtn: document.getElementById("connectBtn"),
-    disconnectBtn: document.getElementById("disconnectBtn"),
-    flashBtn: document.getElementById("flashBtn"),
-    deviceDot: document.getElementById("deviceDot"),
-    deviceLabel: document.getElementById("deviceLabel"),
-    latestChannel: document.getElementById("latestChannel"),
-    latestUrl: document.getElementById("latestUrl"),
-    latestSourceGroup: document.getElementById("latestSourceGroup"),
-    customSourceGroup: document.getElementById("customSourceGroup"),
-    customFile: document.getElementById("customFile"),
-    sourceModeInputs: document.querySelectorAll('input[name="sourceMode"]'),
-    progressBar: document.getElementById("progressBar"),
-    statusText: document.getElementById("statusText"),
-    log: document.getElementById("log"),
-    deviceSection: document.getElementById("deviceSection"),
-    firmwareSection: document.getElementById("firmwareSection"),
-    progressBarSection: document.getElementById("progressBarSection"),
-};
-
-const state = {
-    device: null,
-    webdfu: null,
-    connected: false,
-    flashing: false,
-};
-
-function log(msg) {
-    const stamp = new Date().toLocaleTimeString();
-    ui.log.textContent += `[${stamp}] ${msg}\n`;
-    ui.log.scrollTop = ui.log.scrollHeight;
-}
-
-function setStatus(text, level = "normal") {
-    ui.statusText.textContent = text;
-    ui.statusText.classList.remove("warn", "error");
-    if (level === "warn" || level === "error") {
-        ui.statusText.classList.add(level);
+  // node_modules/nanoevents/index.js
+  var createNanoEvents;
+  var init_nanoevents = __esm({
+    "node_modules/nanoevents/index.js"() {
+      createNanoEvents = () => ({
+        events: {},
+        emit(event, ...args) {
+          ;
+          (this.events[event] || []).forEach((i2) => i2(...args));
+        },
+        on(event, cb) {
+          ;
+          (this.events[event] = this.events[event] || []).push(cb);
+          return () => this.events[event] = (this.events[event] || []).filter((i2) => i2 !== cb);
+        }
+      });
     }
-}
+  });
 
-function setProgress(ratio) {
-    const clamped = Math.max(0, Math.min(1, ratio));
-    ui.progressBar.style.width = `${(clamped * 100).toFixed(1)}%`;
-}
-
-function getSourceMode() {
-    const checked = [...ui.sourceModeInputs].find((input) => input.checked);
-    return checked ? checked.value : "latest";
-}
-
-function updateSourceModeUI() {
-    const isLatest = getSourceMode() === "latest";
-    ui.latestSourceGroup.hidden = !isLatest;
-    ui.customSourceGroup.hidden = isLatest;
-}
-
-function updateControls() {
-    ui.connectBtn.disabled = state.connected || state.flashing;
-    ui.disconnectBtn.disabled = !state.connected || state.flashing;
-    ui.flashBtn.disabled = !state.connected || state.flashing;
-
-    ui.customFile.disabled = state.flashing;
-    ui.latestChannel.disabled = state.flashing;
-    ui.latestUrl.disabled = state.flashing;
-
-    if (state.connected) {
-        ui.deviceDot.classList.add("connected");
-    } else {
-        ui.deviceDot.classList.remove("connected");
+  // node_modules/dfu/dist/index.js
+  function t(e, t2, i2, n2) {
+    return new (i2 || (i2 = Promise))((function(r2, s2) {
+      function o(e2) {
+        try {
+          d2(n2.next(e2));
+        } catch (e3) {
+          s2(e3);
+        }
+      }
+      function a2(e2) {
+        try {
+          d2(n2.throw(e2));
+        } catch (e3) {
+          s2(e3);
+        }
+      }
+      function d2(e2) {
+        var t3;
+        e2.done ? r2(e2.value) : (t3 = e2.value, t3 instanceof i2 ? t3 : new i2((function(e3) {
+          e3(t3);
+        }))).then(o, a2);
+      }
+      d2((n2 = n2.apply(e, t2 || [])).next());
+    }));
+  }
+  function s(e) {
+    var t2, i2, n2, s2, o;
+    const a2 = e.indexOf("/");
+    if (!e.startsWith("@") || -1 == a2) throw new r(`Not a DfuSe memory descriptor: "${e}"`);
+    const d2 = e.substring(1, a2).trim(), u2 = e.substring(a2);
+    let c2 = [];
+    const l2 = { " ": 1, B: 1, K: 1024, M: 1048576 };
+    let f2, h2 = /\/\s*(0x[0-9a-fA-F]{1,8})\s*\/(\s*[0-9]+\s*\*\s*[0-9]+\s?[ BKM]\s*[abcdefg]\s*,?\s*)+/g;
+    for (; f2 = h2.exec(u2); ) {
+      let e2, r2 = /([0-9]+)\s*\*\s*([0-9]+)\s?([ BKM])\s*([abcdefg])\s*,?\s*/g, a3 = parseInt(null !== (t2 = null == f2 ? void 0 : f2[1]) && void 0 !== t2 ? t2 : "", 16);
+      for (; e2 = r2.exec(f2[0]); ) {
+        let t3 = parseInt(e2[1], 10), r3 = parseInt(e2[2]) * (null !== (n2 = l2[null !== (i2 = null == e2 ? void 0 : e2[3]) && void 0 !== i2 ? i2 : ""]) && void 0 !== n2 ? n2 : 0), d3 = (null === (o = null !== (s2 = null == e2 ? void 0 : e2[4]) && void 0 !== s2 ? s2 : "") || void 0 === o ? void 0 : o.charCodeAt(0)) - "a".charCodeAt(0) + 1, u3 = { start: a3, sectorSize: r3, end: a3 + r3 * t3, readable: 0 != (1 & d3), erasable: 0 != (2 & d3), writable: 0 != (4 & d3) };
+        c2.push(u3), a3 += r3 * t3;
+      }
     }
+    return { name: d2, segments: c2 };
+  }
+  function a(e) {
+    return { bLength: e.getUint8(0), bDescriptorType: e.getUint8(1), bmAttributes: e.getUint8(2), wDetachTimeOut: e.getUint16(3, true), wTransferSize: e.getUint16(5, true), bcdDFUVersion: e.getUint16(7, true) };
+  }
+  function d(e) {
+    return { bLength: e.getUint8(0), bDescriptorType: e.getUint8(1), bInterfaceNumber: e.getUint8(2), bAlternateSetting: e.getUint8(3), bNumEndpoints: e.getUint8(4), bInterfaceClass: e.getUint8(5), bInterfaceSubClass: e.getUint8(6), bInterfaceProtocol: e.getUint8(7), iInterface: e.getUint8(8), descriptors: [] };
+  }
+  function u(e) {
+    let t2, i2 = e, n2 = [], r2 = false;
+    for (; i2.byteLength > 2; ) {
+      let e2 = i2.getUint8(0), s2 = i2.getUint8(1), o = new DataView(i2.buffer.slice(0, e2));
+      if (4 == s2) t2 = d(o), r2 = 254 == t2.bInterfaceClass && 1 == t2.bInterfaceSubClass, n2.push(t2);
+      else if (r2 && 33 == s2) {
+        let e3 = a(o);
+        n2.push(e3), null == t2 || t2.descriptors.push(e3);
+      } else {
+        let i3 = { bLength: e2, bDescriptorType: s2, descData: o };
+        n2.push(i3), t2 && t2.descriptors.push(i3);
+      }
+      i2 = new DataView(i2.buffer.slice(e2));
+    }
+    return n2;
+  }
+  function c(e) {
+    let t2 = u(new DataView(e.buffer.slice(9)));
+    return { bLength: e.getUint8(0), bDescriptorType: e.getUint8(1), wTotalLength: e.getUint16(2, true), bNumInterfaces: e.getUint8(4), bConfigurationValue: e.getUint8(5), iConfiguration: e.getUint8(6), bmAttributes: e.getUint8(7), bMaxPower: e.getUint8(8), descriptors: t2 };
+  }
+  var i, n, r, l, f, h, v, g;
+  var init_dist = __esm({
+    "node_modules/dfu/dist/index.js"() {
+      init_nanoevents();
+      !(function(e) {
+        e[e.GET_COMMANDS = 0] = "GET_COMMANDS", e[e.SET_ADDRESS = 33] = "SET_ADDRESS", e[e.ERASE_SECTOR = 65] = "ERASE_SECTOR";
+      })(i || (i = {}));
+      n = { DFU: 1, SDFUse: 2 };
+      r = class extends Error {
+      };
+      l = class {
+        constructor() {
+          this.events = createNanoEvents();
+        }
+      };
+      f = class {
+        constructor() {
+          this.events = createNanoEvents();
+        }
+      };
+      h = class {
+        constructor() {
+          this.events = createNanoEvents();
+        }
+      };
+      v = { DETACH: 0, DOWNLOAD: 1, UPLOAD: 2, GETSTATUS: 3, CLRSTATUS: 4, GETSTATE: 5, ABORT: 6, appIDLE: 0, appDETACH: 1, dfuIDLE: 2, dfuDOWNLOAD_SYNC: 3, dfuDNBUSY: 4, dfuDOWNLOAD_IDLE: 5, dfuMANIFEST_SYNC: 6, dfuMANIFEST: 7, dfuMANIFEST_WAIT_RESET: 8, dfuUPLOAD_IDLE: 9, dfuERROR: 10, STATUS_OK: 0 };
+      g = class {
+        constructor(t2, i2 = {}, n2) {
+          this.device = t2, this.settings = i2, this.log = n2, this.events = createNanoEvents(), this.interfaces = [], this.connected = false, this.dfuseStartAddress = NaN;
+        }
+        get type() {
+          var e, t2;
+          return 282 == (null === (e = this.properties) || void 0 === e ? void 0 : e.DFUVersion) && 2 == (null === (t2 = this.currentInterfaceSettings) || void 0 === t2 ? void 0 : t2.alternate.interfaceProtocol) ? n.SDFUse : n.DFU;
+        }
+        init() {
+          return t(this, void 0, void 0, (function* () {
+            this.interfaces = yield this.findDfuInterfaces(), this.events.emit("init");
+          }));
+        }
+        connect(e) {
+          return t(this, void 0, void 0, (function* () {
+            this.device.opened || (yield this.device.open());
+            let t2 = null;
+            try {
+              t2 = yield this.getDFUDescriptorProperties();
+            } catch (e2) {
+              throw this.events.emit("disconnect", e2), e2;
+            }
+            const i2 = this.interfaces[e];
+            if (!i2) throw new r("Interface not found");
+            this.currentInterfaceSettings = i2, this.currentInterfaceSettings.name && (this.dfuseMemoryInfo = s(this.currentInterfaceSettings.name)), t2 && (this.properties = t2);
+            try {
+              yield this.open();
+            } catch (e2) {
+              throw this.events.emit("disconnect", e2), e2;
+            }
+            this.events.emit("connect");
+          }));
+        }
+        close() {
+          return t(this, void 0, void 0, (function* () {
+            yield this.device.close(), this.events.emit("disconnect");
+          }));
+        }
+        read(e, t2) {
+          if (!this) throw new r("Required initialized driver");
+          const i2 = new l();
+          try {
+            let r2;
+            r2 = this.type === n.SDFUse ? this.do_dfuse_read(i2, e, t2) : this.do_read(i2, e, t2), r2.then(((e2) => i2.events.emit("end", e2))).catch(((e2) => i2.events.emit("error", e2)));
+          } catch (e2) {
+            i2.events.emit("error", e2);
+          }
+          return i2;
+        }
+        write(e, t2, i2) {
+          if (!this) throw new r("Required initialized driver");
+          let s2 = new f();
+          return setTimeout((() => {
+            try {
+              let r2;
+              r2 = this.type === n.SDFUse ? this.do_dfuse_write(s2, e, t2) : this.do_write(s2, e, t2, i2), r2.then((() => s2.events.emit("end"))).catch(((e2) => s2.events.emit("error", e2)));
+            } catch (e2) {
+              s2.events.on("error", e2);
+            }
+          }), 0), s2;
+        }
+        getDFUDescriptorProperties() {
+          var e;
+          return t(this, void 0, void 0, (function* () {
+            let t2 = c(yield this.readConfigurationDescriptor(0)), i2 = null, n2 = null === (e = this.device.configuration) || void 0 === e ? void 0 : e.configurationValue;
+            if (t2.bConfigurationValue == n2) {
+              for (let e2 of t2.descriptors) if (33 == e2.bDescriptorType && e2.hasOwnProperty("bcdDFUVersion")) {
+                i2 = e2;
+                break;
+              }
+            }
+            return i2 ? { WillDetach: 0 != (8 & i2.bmAttributes), ManifestationTolerant: 0 != (4 & i2.bmAttributes), CanUpload: 0 != (2 & i2.bmAttributes), CanDownload: 0 != (1 & i2.bmAttributes), TransferSize: i2.wTransferSize, DetachTimeOut: i2.wDetachTimeOut, DFUVersion: i2.bcdDFUVersion } : null;
+          }));
+        }
+        findDfuInterfaces() {
+          return t(this, void 0, void 0, (function* () {
+            const e = [];
+            for (let t2 of this.device.configurations) for (let i2 of t2.interfaces) for (let n2 of i2.alternates) 254 != n2.interfaceClass || 1 != n2.interfaceSubclass || 1 != n2.interfaceProtocol && 2 != n2.interfaceProtocol || e.push({ configuration: t2, interface: i2, alternate: n2, name: n2.interfaceName });
+            return this.settings.forceInterfacesName && (yield this.fixInterfaceNames(e)), e;
+          }));
+        }
+        fixInterfaceNames(e) {
+          var i2, n2, r2;
+          return t(this, void 0, void 0, (function* () {
+            if (e.some(((e2) => null == e2.name))) {
+              yield this.device.open(), yield this.device.selectConfiguration(1);
+              let t2 = yield this.readInterfaceNames();
+              for (let s2 of e) if (null === s2.name) {
+                let e2 = s2.configuration.configurationValue, o = s2.interface.interfaceNumber, a2 = s2.alternate.alternateSetting;
+                s2.name = null === (r2 = null === (n2 = null === (i2 = null == t2 ? void 0 : t2[e2]) || void 0 === i2 ? void 0 : i2[o]) || void 0 === n2 ? void 0 : n2[a2]) || void 0 === r2 ? void 0 : r2.toString();
+              }
+            }
+          }));
+        }
+        readStringDescriptor(e, i2 = 0) {
+          return t(this, void 0, void 0, (function* () {
+            const t2 = { requestType: "standard", recipient: "device", request: 6, value: 768 | e, index: i2 };
+            let n2 = yield this.device.controlTransferIn(t2, 1);
+            if (n2.data && "ok" == n2.status) {
+              const e2 = n2.data.getUint8(0);
+              if (n2 = yield this.device.controlTransferIn(t2, e2), n2.data && "ok" == n2.status) {
+                const t3 = (e2 - 2) / 2;
+                let r2 = [];
+                for (let e3 = 0; e3 < t3; e3++) r2.push(n2.data.getUint16(2 + 2 * e3, true));
+                return 0 == i2 ? r2 : String.fromCharCode.apply(String, r2);
+              }
+            }
+            throw new r(`Failed to read string descriptor ${e}: ${n2.status}`);
+          }));
+        }
+        readDeviceDescriptor() {
+          return t(this, void 0, void 0, (function* () {
+            const e = yield this.device.controlTransferIn({ requestType: "standard", recipient: "device", request: 6, value: 256, index: 0 }, 18);
+            if (!e.data || "ok" !== e.status) throw new r(`Failed to read device descriptor: ${e.status}`);
+            return e.data;
+          }));
+        }
+        readInterfaceNames() {
+          var e;
+          return t(this, void 0, void 0, (function* () {
+            let t2 = {}, i2 = /* @__PURE__ */ new Set();
+            for (let n3 = 0; n3 < this.device.configurations.length; n3++) {
+              let r2 = c(yield this.readConfigurationDescriptor(n3)), s2 = r2.bConfigurationValue;
+              t2[s2] = {};
+              for (let n4 of r2.descriptors) 4 === n4.bDescriptorType && (n4 = n4, (null === (e = t2[s2]) || void 0 === e ? void 0 : e[n4.bInterfaceNumber]) || (t2[s2][n4.bInterfaceNumber] = {}), t2[s2][n4.bInterfaceNumber][n4.bAlternateSetting] = n4.iInterface, n4.iInterface > 0 && i2.add(n4.iInterface));
+            }
+            let n2 = {};
+            for (let e2 of i2) try {
+              n2[e2] = yield this.readStringDescriptor(e2, 1033);
+            } catch (t3) {
+              console.log(t3), n2[e2] = null;
+            }
+            for (let e2 of Object.values(t2)) for (let t3 of Object.values(e2)) for (let e3 in t3) t3[e3] = n2[t3[e3]];
+            return t2;
+          }));
+        }
+        readConfigurationDescriptor(e) {
+          return t(this, void 0, void 0, (function* () {
+            const t2 = { requestType: "standard", recipient: "device", request: 6, value: 512 | e, index: 0 }, i2 = yield this.device.controlTransferIn(t2, 4);
+            if (!i2.data || "ok" !== i2.status) throw new r(`controlTransferIn error. [status]: ${i2.status}`);
+            let n2 = i2.data.getUint16(2, true);
+            const s2 = yield this.device.controlTransferIn(t2, n2);
+            if (!s2.data || "ok" !== s2.status) throw new r(`controlTransferIn error. [status]: ${s2.status}`);
+            return s2.data;
+          }));
+        }
+        open() {
+          var e;
+          return t(this, void 0, void 0, (function* () {
+            if (!this.currentInterfaceSettings) throw new r("Required selected interface");
+            const t2 = this.currentInterfaceSettings.configuration.configurationValue;
+            if (this.device.configuration && this.device.configuration.configurationValue === t2 || (yield this.device.selectConfiguration(t2)), !this.device.configuration) throw new r(`Couldn't select the configuration '${t2}'`);
+            const i2 = this.currentInterfaceSettings.interface.interfaceNumber;
+            (null === (e = this.device.configuration.interfaces[i2]) || void 0 === e ? void 0 : e.claimed) || (yield this.device.claimInterface(i2));
+            const n2 = this.currentInterfaceSettings.alternate.alternateSetting;
+            let s2 = this.device.configuration.interfaces[i2];
+            (null == s2 ? void 0 : s2.alternate) && s2.alternate.alternateSetting == n2 || (yield this.device.selectAlternateInterface(i2, n2));
+          }));
+        }
+        detach() {
+          return this.requestOut(v.DETACH, void 0, 1e3);
+        }
+        abort() {
+          return this.requestOut(v.ABORT);
+        }
+        waitDisconnected(e) {
+          return t(this, void 0, void 0, (function* () {
+            let t2 = this, i2 = this.device;
+            return new Promise(((n2, r2) => {
+              let s2;
+              function o(r3) {
+                r3.device === i2 && (e > 0 && clearTimeout(s2), t2.connected = false, navigator.usb.removeEventListener("disconnect", o), r3.stopPropagation(), n2(t2));
+              }
+              e > 0 ? s2 = window.setTimeout((() => {
+                navigator.usb.removeEventListener("disconnect", o), t2.connected && r2("Disconnect timeout expired");
+              }), e) : navigator.usb.addEventListener("disconnect", o);
+            }));
+          }));
+        }
+        isError() {
+          return t(this, void 0, void 0, (function* () {
+            try {
+              const e = yield this.getStatus();
+              return !e || (null == e ? void 0 : e.state) == v.dfuERROR;
+            } catch (e) {
+              return true;
+            }
+          }));
+        }
+        getState() {
+          return this.requestIn(v.GETSTATE, 1).then(((e) => Promise.resolve(e.getUint8(0))), ((e) => Promise.reject("DFU GETSTATE failed: " + e)));
+        }
+        getStatus() {
+          return this.requestIn(v.GETSTATUS, 6).then(((e) => Promise.resolve({ status: e.getUint8(0), pollTimeout: 16777215 & e.getUint32(1, true), state: e.getUint8(4) })), ((e) => Promise.reject("DFU GETSTATUS failed: " + e)));
+        }
+        clearStatus() {
+          return this.requestOut(v.CLRSTATUS);
+        }
+        get intfNumber() {
+          if (!this.currentInterfaceSettings) throw new r("Required selected interface");
+          return this.currentInterfaceSettings.interface.interfaceNumber;
+        }
+        requestOut(e, i2, n2 = 0) {
+          return t(this, void 0, void 0, (function* () {
+            try {
+              const t2 = yield this.device.controlTransferOut({ requestType: "class", recipient: "interface", request: e, value: n2, index: this.intfNumber }, i2);
+              if ("ok" !== t2.status) throw new r(t2.status);
+              return t2.bytesWritten;
+            } catch (e2) {
+              throw new r("ControlTransferOut failed: " + e2);
+            }
+          }));
+        }
+        requestIn(e, i2, n2 = 0) {
+          return t(this, void 0, void 0, (function* () {
+            try {
+              const t2 = yield this.device.controlTransferIn({ requestType: "class", recipient: "interface", request: e, value: n2, index: this.intfNumber }, i2);
+              if ("ok" !== t2.status || !t2.data) throw new r(t2.status);
+              return t2.data;
+            } catch (e2) {
+              throw new r("ControlTransferIn failed: " + e2);
+            }
+          }));
+        }
+        download(e, t2) {
+          return this.requestOut(v.DOWNLOAD, e, t2);
+        }
+        upload(e, t2) {
+          return this.requestIn(v.UPLOAD, e, t2);
+        }
+        abortToIdle() {
+          return t(this, void 0, void 0, (function* () {
+            yield this.abort();
+            let e = yield this.getState();
+            if (e == v.dfuERROR && (yield this.clearStatus(), e = yield this.getState()), e != v.dfuIDLE) throw new r("Failed to return to idle state after abort: state " + e);
+          }));
+        }
+        poll_until(e) {
+          return t(this, void 0, void 0, (function* () {
+            let t2 = yield this.getStatus();
+            function i2(e2) {
+              return new Promise(((t3) => {
+                setTimeout(t3, e2);
+              }));
+            }
+            for (; !e(t2.state) && t2.state != v.dfuERROR; ) yield i2(t2.pollTimeout), t2 = yield this.getStatus();
+            return t2;
+          }));
+        }
+        poll_until_idle(e) {
+          return this.poll_until(((t2) => t2 == e));
+        }
+        do_read(e, i2, n2 = 1 / 0, r2 = 0) {
+          return t(this, void 0, void 0, (function* () {
+            let t2, s2, o = r2, a2 = [], d2 = 0;
+            e.events.emit("process", 0);
+            do {
+              s2 = Math.min(i2, n2 - d2), t2 = yield this.upload(s2, o++), t2.byteLength > 0 && (a2.push(t2), d2 += t2.byteLength), e.events.emit("process", d2, Number.isFinite(n2) ? n2 : void 0);
+            } while (d2 < n2 && t2.byteLength == s2);
+            return d2 == n2 && (yield this.abortToIdle()), new Blob(a2, { type: "application/octet-stream" });
+          }));
+        }
+        do_write(e, i2, n2, s2 = true) {
+          return t(this, void 0, void 0, (function* () {
+            let t2 = 0, o = n2.byteLength, a2 = 0;
+            for (e.events.emit("write/start"), e.events.emit("write/process", t2, o); t2 < o; ) {
+              const s3 = o - t2, d2 = Math.min(s3, i2);
+              let u2, c2 = 0;
+              try {
+                c2 = yield this.download(n2.slice(t2, t2 + d2), a2++), u2 = yield this.poll_until_idle(v.dfuDOWNLOAD_IDLE);
+              } catch (e2) {
+                throw new r("Error during DFU download: " + e2);
+              }
+              if (u2.status != v.STATUS_OK) throw new r(`DFU DOWNLOAD failed state=${u2.state}, status=${u2.status}`);
+              t2 += c2, e.events.emit("write/process", t2, o);
+            }
+            try {
+              yield this.download(new ArrayBuffer(0), a2++);
+            } catch (e2) {
+              throw new r("Error during final DFU download: " + e2);
+            }
+            if (e.events.emit("write/end", t2), s2) {
+              let e2;
+              try {
+                if (e2 = yield this.poll_until(((e3) => e3 == v.dfuIDLE || e3 == v.dfuMANIFEST_WAIT_RESET)), e2.status != v.STATUS_OK) throw new r(`DFU MANIFEST failed state=${e2.state}, status=${e2.status}`);
+              } catch (e3) {
+                if (!e3.endsWith("ControlTransferIn failed: NotFoundError: Device unavailable.") && !e3.endsWith("ControlTransferIn failed: NotFoundError: The device was disconnected.")) throw new r("Error during DFU manifest: " + e3);
+                this.log.warning("Unable to poll final manifestation status");
+              }
+            } else try {
+              yield this.getStatus();
+            } catch (e2) {
+            }
+            try {
+              yield this.device.reset();
+            } catch (e2) {
+              if ("NetworkError: Unable to reset the device." != e2 && "NotFoundError: Device unavailable." != e2 && "NotFoundError: The device was disconnected." != e2) throw new r("Error during reset for manifestation: " + e2);
+            }
+          }));
+        }
+        do_dfuse_write(e, n2, s2) {
+          var o;
+          return t(this, void 0, void 0, (function* () {
+            if (!this.dfuseMemoryInfo || !this.dfuseMemoryInfo.segments) throw new r("No memory map available");
+            e.events.emit("erase/start");
+            let t2 = 0, a2 = s2.byteLength, d2 = this.dfuseStartAddress;
+            if (isNaN(d2)) {
+              if (d2 = null === (o = this.dfuseMemoryInfo.segments[0]) || void 0 === o ? void 0 : o.start, !d2) throw new r("startAddress not found");
+              this.log.warning("Using inferred start address 0x" + d2.toString(16));
+            } else if (null === this.getDfuseSegment(d2) && 0 !== s2.byteLength) throw new r(`Start address 0x${d2.toString(16)} outside of memory map bounds`);
+            yield new Promise(((t3, i2) => {
+              if (!d2) return void i2(new r("startAddress not found"));
+              const n3 = this.erase(d2, a2);
+              n3.events.on("process", ((...t4) => e.events.emit("erase/process", ...t4))), n3.events.on("error", i2), n3.events.on("end", (() => {
+                e.events.emit("erase/end"), t3();
+              }));
+            })), e.events.emit("write/start");
+            let u2 = d2;
+            for (; t2 < a2; ) {
+              const o2 = a2 - t2, d3 = Math.min(o2, n2);
+              let c2, l2 = 0;
+              try {
+                yield this.dfuseCommand(i.SET_ADDRESS, u2, 4), l2 = yield this.download(s2.slice(t2, t2 + d3), 2), c2 = yield this.poll_until_idle(v.dfuDOWNLOAD_IDLE), u2 += d3;
+              } catch (e2) {
+                throw new r("Error during DfuSe download: " + e2);
+              }
+              if (c2.status != v.STATUS_OK) throw new r(`DFU DOWNLOAD failed state=${c2.state}, status=${c2.status}`);
+              t2 += l2, e.events.emit("write/process", t2, a2);
+            }
+            e.events.emit("write/end", t2);
+            try {
+              yield this.dfuseCommand(i.SET_ADDRESS, d2, 4), yield this.download(new ArrayBuffer(0), 0);
+            } catch (e2) {
+              throw new r("Error during DfuSe manifestation: " + e2);
+            }
+            yield this.poll_until(((e2) => e2 == v.dfuMANIFEST));
+          }));
+        }
+        do_dfuse_read(e, n2, s2 = 1 / 0) {
+          var o;
+          return t(this, void 0, void 0, (function* () {
+            if (!this.dfuseMemoryInfo) throw new r("Unknown a DfuSe memory info");
+            let t2 = this.dfuseStartAddress;
+            if (isNaN(t2)) {
+              if (t2 = null === (o = this.dfuseMemoryInfo.segments[0]) || void 0 === o ? void 0 : o.start, !t2) throw new r("Unknown memory segments");
+              this.log.warning("Using inferred start address 0x" + t2.toString(16));
+            } else null === this.getDfuseSegment(t2) && this.log.warning(`Start address 0x${t2.toString(16)} outside of memory map bounds`);
+            return (yield this.getState()) != v.dfuIDLE && (yield this.abortToIdle()), yield this.dfuseCommand(i.SET_ADDRESS, t2, 4), yield this.abortToIdle(), yield this.do_read(e, n2, s2, 2);
+          }));
+        }
+        getDfuseSegment(e) {
+          if (!this.dfuseMemoryInfo || !this.dfuseMemoryInfo.segments) throw new r("No memory map information available");
+          for (let t2 of this.dfuseMemoryInfo.segments) if (t2.start <= e && e < t2.end) return t2;
+          return null;
+        }
+        getDfuseFirstWritableSegment() {
+          if (!this.dfuseMemoryInfo || !this.dfuseMemoryInfo.segments) throw new r("No memory map information available");
+          for (let e of this.dfuseMemoryInfo.segments) if (e.writable) return e;
+          return null;
+        }
+        getDfuseMaxReadSize(e) {
+          if (!this.dfuseMemoryInfo || !this.dfuseMemoryInfo.segments) throw new r("No memory map information available");
+          let t2 = 0;
+          for (let i2 of this.dfuseMemoryInfo.segments) if (i2.start <= e && e < i2.end) {
+            if (!i2.readable) return 0;
+            t2 += i2.end - e;
+          } else if (i2.start == e + t2) {
+            if (!i2.readable) break;
+            t2 += i2.end - i2.start;
+          }
+          return t2;
+        }
+        getDfuseSectorStart(e, t2) {
+          if (void 0 === t2 && (t2 = this.getDfuseSegment(e)), !t2) throw new r(`Address ${e.toString(16)} outside of memory map`);
+          const i2 = Math.floor((e - t2.start) / t2.sectorSize);
+          return t2.start + i2 * t2.sectorSize;
+        }
+        getDfuseSectorEnd(e, t2 = this.getDfuseSegment(e)) {
+          if (!t2) throw new r(`Address ${e.toString(16)} outside of memory map`);
+          const i2 = Math.floor((e - t2.start) / t2.sectorSize);
+          return t2.start + (i2 + 1) * t2.sectorSize;
+        }
+        erase(e, n2) {
+          const s2 = new h(), o = this;
+          return (function() {
+            var a2, d2, u2;
+            return t(this, void 0, void 0, (function* () {
+              let t2 = o.getDfuseSegment(e), c2 = o.getDfuseSectorStart(e, t2);
+              const l2 = o.getDfuseSectorEnd(e + n2 - 1);
+              if (!t2) throw new r("Unknown segment");
+              let f2 = 0;
+              const h2 = l2 - c2;
+              for (h2 > 0 && s2.events.emit("process", f2, h2); c2 < l2; ) {
+                if ((null !== (a2 = null == t2 ? void 0 : t2.end) && void 0 !== a2 ? a2 : 0) <= c2 && (t2 = o.getDfuseSegment(c2)), null == t2 ? void 0 : t2.erasable) {
+                  const e2 = Math.floor((c2 - t2.start) / t2.sectorSize), n3 = t2.start + e2 * t2.sectorSize;
+                  yield o.dfuseCommand(i.ERASE_SECTOR, n3, 4), c2 = n3 + t2.sectorSize, f2 += t2.sectorSize;
+                } else f2 = Math.min(f2 + (null !== (d2 = null == t2 ? void 0 : t2.end) && void 0 !== d2 ? d2 : 0) - c2, h2), c2 = null !== (u2 = null == t2 ? void 0 : t2.end) && void 0 !== u2 ? u2 : 0;
+                s2.events.emit("process", f2, h2);
+              }
+            }));
+          })().then((() => s2.events.emit("end"))).catch(((e2) => s2.events.emit("error", e2))), s2;
+        }
+        dfuseCommand(e, n2 = 0, s2 = 1) {
+          return t(this, void 0, void 0, (function* () {
+            const t2 = { [i.GET_COMMANDS]: "GET_COMMANDS", [i.SET_ADDRESS]: "SET_ADDRESS", [i.ERASE_SECTOR]: "ERASE_SECTOR" };
+            let o = new ArrayBuffer(s2 + 1), a2 = new DataView(o);
+            if (a2.setUint8(0, e), 1 == s2) a2.setUint8(1, n2);
+            else {
+              if (4 != s2) throw new r("Don't know how to handle data of len " + s2);
+              a2.setUint32(1, n2, true);
+            }
+            try {
+              yield this.download(o, 0);
+            } catch (i2) {
+              throw new r("Error during special DfuSe command " + t2[e] + ":" + i2);
+            }
+            if ((yield this.poll_until(((e2) => e2 != v.dfuDNBUSY))).status != v.STATUS_OK) throw new r("Special DfuSe command " + e + " failed");
+          }));
+        }
+      };
+    }
+  });
 
-    if (state.flashing) {
-        ui.progressBarSection.classList.add("active");
-        ui.deviceSection.classList.remove("active");
-        ui.firmwareSection.classList.remove("active");
-    } else {
-        ui.progressBarSection.classList.remove("active");
+  // src/js/updater.js
+  var require_updater = __commonJS({
+    "src/js/updater.js"() {
+      init_dist();
+      var STABLE_RELEASES = [
+        { version: "1.1.0", url: "./firmware/latest.bin" },
+        { version: "1.0.0", url: "./firmware/latest.bin" }
+      ];
+      var BETA_RELEASES = [
+        { version: "1.1.0-beta", url: "./firmware/beta.bin" }
+      ];
+      var ui = {
+        connectBtn: document.getElementById("connectBtn"),
+        disconnectBtn: document.getElementById("disconnectBtn"),
+        flashBtn: document.getElementById("flashBtn"),
+        deviceDot: document.getElementById("deviceDot"),
+        deviceLabel: document.getElementById("deviceLabel"),
+        stableVersion: document.getElementById("stableVersion"),
+        stableUrl: document.getElementById("stableUrl"),
+        betaVersion: document.getElementById("betaVersion"),
+        betaUrl: document.getElementById("betaUrl"),
+        customFile: document.getElementById("customFile"),
+        progressBar: document.querySelector(".progress-bar"),
+        statusText: document.getElementById("statusText"),
+        log: document.getElementById("log"),
+        tabs: {
+          stable: document.getElementById("stable-tab"),
+          beta: document.getElementById("beta-tab"),
+          custom: document.getElementById("custom-tab")
+        }
+      };
+      var state = {
+        device: null,
+        webdfu: null,
+        connected: false,
+        flashing: false
+      };
+      function log(message) {
+        const stamp = (/* @__PURE__ */ new Date()).toLocaleTimeString();
+        ui.log.textContent += `[${stamp}] ${message}
+`;
+        ui.log.scrollTop = ui.log.scrollHeight;
+      }
+      function setStatus(text, level = "normal") {
+        ui.statusText.textContent = text;
+        ui.statusText.classList.remove("warn", "error");
+        if (level === "warn" || level === "error") {
+          ui.statusText.classList.add(level);
+        }
+      }
+      function setProgress(ratio) {
+        const clamped = Math.max(0, Math.min(1, ratio));
+        ui.progressBar.style.width = `${(clamped * 100).toFixed(1)}%`;
+      }
+      function setSelectOptions(select, releases) {
+        select.innerHTML = "";
+        for (const release of releases) {
+          const option = document.createElement("option");
+          option.value = release.version;
+          option.textContent = release.version;
+          select.appendChild(option);
+        }
+      }
+      function getActiveSourceMode() {
+        if (ui.tabs.custom.classList.contains("active")) {
+          return "custom";
+        }
+        if (ui.tabs.beta.classList.contains("active")) {
+          return "beta";
+        }
+        return "stable";
+      }
+      function updateSelectedUrls() {
+        const stable = STABLE_RELEASES.find((item) => item.version === ui.stableVersion.value);
+        ui.stableUrl.value = stable ? stable.url : "";
+        const beta = BETA_RELEASES.find((item) => item.version === ui.betaVersion.value);
+        ui.betaUrl.value = beta ? beta.url : "";
+      }
+      function updateControls() {
+        const sourceMode = getActiveSourceMode();
+        const hasCustomFile = Boolean(ui.customFile.files && ui.customFile.files[0]);
+        const sourceReady = sourceMode !== "custom" || hasCustomFile;
+        ui.connectBtn.disabled = state.connected || state.flashing;
+        ui.disconnectBtn.disabled = !state.connected || state.flashing;
+        ui.flashBtn.disabled = !state.connected || state.flashing || !sourceReady;
+        ui.stableVersion.disabled = state.flashing;
+        ui.betaVersion.disabled = state.flashing;
+        ui.customFile.disabled = state.flashing;
         if (state.connected) {
-            ui.deviceSection.classList.remove("active");
-            ui.firmwareSection.classList.add("active");
+          ui.deviceDot.classList.add("connected");
         } else {
-            ui.deviceSection.classList.add("active");
-            ui.firmwareSection.classList.remove("active");
+          ui.deviceDot.classList.remove("connected");
         }
-    }
-}
-
-function loadChannels() {
-    ui.latestChannel.innerHTML = "";
-    for (const channel of DEFAULT_CHANNELS) {
-        const option = document.createElement("option");
-        option.value = channel.id;
-        option.textContent = channel.label;
-        ui.latestChannel.appendChild(option);
-    }
-
-    if (DEFAULT_CHANNELS.length > 0) {
-        ui.latestUrl.value = DEFAULT_CHANNELS[0].url;
-    }
-}
-
-function applySelectedChannelUrl() {
-    const channel = DEFAULT_CHANNELS.find((item) => item.id === ui.latestChannel.value);
-    if (channel) {
-        ui.latestUrl.value = channel.url;
-    }
-}
-
-function ensureWebUSBSupported() {
-    if (!navigator.usb) {
-        throw new Error("WebUSB is not available in this browser.");
-    }
-}
-
-async function readFirmwareBinary() {
-    const sourceMode = getSourceMode();
-
-    if (sourceMode === "latest") {
-        const url = ui.latestUrl.value.trim();
+      }
+      function ensureWebUSBSupported() {
+        if (!navigator.usb) {
+          throw new Error("WebUSB is not available in this browser.");
+        }
+      }
+      async function fetchFirmwareFromUrl(url, nameHint) {
         if (!url) {
-            throw new Error("Latest firmware URL is empty.");
+          throw new Error("Firmware URL is empty.");
         }
-
-        setStatus("Downloading latest firmware...");
+        setStatus("Downloading firmware...");
         log(`Fetching firmware from ${url}`);
-
         const response = await fetch(url, { cache: "no-store" });
         if (!response.ok) {
-            throw new Error(`Failed to download firmware (${response.status} ${response.statusText}).`);
+          throw new Error(`Failed to download firmware (${response.status} ${response.statusText}).`);
         }
-
         const buffer = await response.arrayBuffer();
         if (!buffer.byteLength) {
-            throw new Error("Downloaded firmware is empty.");
+          throw new Error("Downloaded firmware is empty.");
         }
-
         return {
-            name: `latest-${ui.latestChannel.value || "firmware"}.bin`,
-            bytes: new Uint8Array(buffer),
+          name: `${nameHint}.bin`,
+          bytes: new Uint8Array(buffer)
         };
-    }
-
-    const file = ui.customFile.files && ui.customFile.files[0];
-    if (!file) {
-        throw new Error("No custom firmware file selected.");
-    }
-
-    const buffer = await file.arrayBuffer();
-    if (!buffer.byteLength) {
-        throw new Error("Selected firmware file is empty.");
-    }
-
-    return {
-        name: file.name,
-        bytes: new Uint8Array(buffer),
-    };
-}
-
-function createDfuLogger() {
-    return {
-        info: (msg) => log(`[dfu] ${msg}`),
-        warning: (msg) => log(`[dfu warn] ${msg}`),
-        progress: (done, total) => {
-            if (typeof total === "number" && total > 0) {
-                setProgress(done / total);
-            }
-        },
-    };
-}
-
-async function connectDevice() {
-    ensureWebUSBSupported();
-
-    const device = await navigator.usb.requestDevice({
-        filters: [
-            { vendorId: 0x4D54, productId: 0x3451, classCode: 0xFE, subclassCode: 0x01 }, // Quantica
-        ]
-    });
-    const webdfu = new WebDFU(device, { forceInterfacesName: true }, createDfuLogger());
-
-    await webdfu.init();
-    if (webdfu.interfaces.length === 0) {
-        throw new Error("No DFU-capable interface found on selected device.");
-    }
-
-    await webdfu.connect(0);
-
-    const props = webdfu.properties || {};
-    if (props.CanDownload === false) {
-        throw new Error("Connected DFU interface does not support firmware download.");
-    }
-
-    state.device = device;
-    state.webdfu = webdfu;
-    state.connected = true;
-
-    const product = device.productName || "USB Device";
-    ui.deviceLabel.textContent = `${product}`;
-
-    setStatus("Device connected and DFU ready.");
-    log(`Connected: ${ui.deviceLabel.textContent}`);
-
-    setProgress(0);
-    updateControls();
-}
-
-async function disconnectDevice() {
-    const current = state.webdfu;
-    const rawDevice = state.device;
-
-    state.webdfu = null;
-    state.device = null;
-    state.connected = false;
-
-    try {
-        if (current) {
-            await current.close();
-        } else if (rawDevice && rawDevice.opened) {
-            await rawDevice.close();
+      }
+      async function readFirmwareBinary() {
+        const sourceMode = getActiveSourceMode();
+        if (sourceMode === "stable") {
+          return fetchFirmwareFromUrl(ui.stableUrl.value.trim(), `stable-${ui.stableVersion.value || "firmware"}`);
         }
-    } catch (err) {
-        log(`Disconnect warning: ${err.message || err}`);
-    }
-
-    ui.deviceLabel.textContent = "No device connected";
-    setStatus("Disconnected.");
-    log("Device disconnected.");
-    updateControls();
-}
-
-function firmwareToArrayBuffer(bytes) {
-    return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
-}
-
-async function runWriteProcess(writeProcess, totalBytes) {
-    await new Promise((resolve, reject) => {
-        writeProcess.events.on("erase/start", () => {
-            setStatus("Erasing flash...");
-            log("Erase started.");
-        });
-
-        writeProcess.events.on("erase/process", (bytesSent, expectedSize) => {
-            setStatus(`Erasing... ${bytesSent}/${expectedSize} bytes`);
-            if (expectedSize > 0) {
-                setProgress(bytesSent / expectedSize);
+        if (sourceMode === "beta") {
+          return fetchFirmwareFromUrl(ui.betaUrl.value.trim(), `beta-${ui.betaVersion.value || "firmware"}`);
+        }
+        const file = ui.customFile.files && ui.customFile.files[0];
+        if (!file) {
+          throw new Error("No custom firmware file selected.");
+        }
+        const buffer = await file.arrayBuffer();
+        if (!buffer.byteLength) {
+          throw new Error("Selected firmware file is empty.");
+        }
+        return {
+          name: file.name,
+          bytes: new Uint8Array(buffer)
+        };
+      }
+      function createDfuLogger() {
+        return {
+          info: (msg) => log(`[dfu] ${msg}`),
+          warning: (msg) => log(`[dfu warn] ${msg}`),
+          progress: (done, total) => {
+            if (typeof total === "number" && total > 0) {
+              setProgress(done / total);
             }
-        });
-
-        writeProcess.events.on("write/start", () => {
-            setStatus("Writing firmware...");
-            log(`Write started: ${totalBytes} bytes`);
-            setProgress(0);
-        });
-
-        writeProcess.events.on("write/process", (bytesSent, expectedSize) => {
-            const total = expectedSize || totalBytes;
-            setStatus(`Flashing... ${bytesSent}/${total} bytes`);
-            if (total > 0) {
-                setProgress(bytesSent / total);
-            }
-        });
-
-        writeProcess.events.on("verify", (status) => {
-            log(`Verify: state=${status.state} status=${status.status}`);
-        });
-
-        writeProcess.events.on("error", (error) => {
-            reject(error instanceof Error ? error : new Error(String(error)));
-        });
-
-        writeProcess.events.on("end", () => {
-            resolve();
-        });
-    });
-}
-
-async function flashFirmware() {
-    if (!state.webdfu || !state.connected) {
-        throw new Error("No device connected.");
-    }
-
-    const firmware = await readFirmwareBinary();
-    const manifestationTolerant = state.webdfu.properties?.ManifestationTolerant !== false;
-
-    state.flashing = true;
-    updateControls();
-    setProgress(0);
-
-
-    let dfu_status = await state.webdfu.getStatus();
-    if (dfu_status.state === dfuCommands.appIDLE) {
+          }
+        };
+      }
+      async function reconnectInDfuMode() {
         log("Device is in appIdle state, sending detach request...");
-
         await state.webdfu.detach();
-
         setStatus("Sent detach request, waiting for device to re-enumerate...");
-        log("Waiting for device to disconnect and reconnect...");
-
-        await new Promise(async (resolve, reject) => {
-            const timeout = setTimeout(() => {
-                resolve();
-            }, 1000);
-        });
-
+        await new Promise((resolve) => setTimeout(resolve, 1e3));
         state.device = await navigator.usb.requestDevice({
-            filters: [
-                { vendorId: 0x4D54, productId: 0x3451, classCode: 0xFE, subclassCode: 0x01, protocolCode: 0x02 },
-            ]
+          filters: [
+            { vendorId: 19796, productId: 13393, classCode: 254, subclassCode: 1, protocolCode: 2 }
+          ]
         });
-
-        state.webdfu = new WebDFU(state.device, { forceInterfacesName: true }, createDfuLogger());
-
+        state.webdfu = new g(state.device, { forceInterfacesName: true }, createDfuLogger());
         await state.webdfu.init();
         await state.webdfu.connect(0);
         log("Reconnected to device after detach.");
-    }
-
-    const transferSize = state.webdfu.properties?.TransferSize || 1024;
-    log(`Using device transfer size: ${transferSize} bytes`);
-
-    try {
-        setStatus(`Preparing DFU for ${firmware.name} (${firmware.bytes.length} bytes)...`);
-        log(`Starting flash using dfu package: ${firmware.name}`);
-
-        const writeProcess = state.webdfu.write(
+      }
+      async function connectDevice() {
+        ensureWebUSBSupported();
+        const device = await navigator.usb.requestDevice({
+          filters: [
+            { vendorId: 19796, productId: 13393, classCode: 254, subclassCode: 1 }
+          ]
+        });
+        const webdfu = new g(device, { forceInterfacesName: true }, createDfuLogger());
+        await webdfu.init();
+        if (webdfu.interfaces.length === 0) {
+          throw new Error("No DFU-capable interface found on selected device.");
+        }
+        await webdfu.connect(0);
+        const props = webdfu.properties || {};
+        if (props.CanDownload === false) {
+          throw new Error("Connected DFU interface does not support firmware download.");
+        }
+        state.device = device;
+        state.webdfu = webdfu;
+        state.connected = true;
+        ui.deviceLabel.textContent = device.productName || "USB Device";
+        setStatus("Device connected and DFU ready.");
+        log(`Connected: ${ui.deviceLabel.textContent}`);
+        setProgress(0);
+        updateControls();
+      }
+      async function disconnectDevice() {
+        const current = state.webdfu;
+        const rawDevice = state.device;
+        state.webdfu = null;
+        state.device = null;
+        state.connected = false;
+        try {
+          if (current) {
+            await current.close();
+          } else if (rawDevice && rawDevice.opened) {
+            await rawDevice.close();
+          }
+        } catch (err) {
+          log(`Disconnect warning: ${err.message || err}`);
+        }
+        ui.deviceLabel.textContent = "No device connected";
+        setStatus("Disconnected.");
+        log("Device disconnected.");
+        updateControls();
+      }
+      function firmwareToArrayBuffer(bytes) {
+        return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+      }
+      async function runWriteProcess(writeProcess, totalBytes) {
+        await new Promise((resolve, reject) => {
+          writeProcess.events.on("erase/start", () => {
+            setStatus("Erasing flash...");
+            log("Erase started.");
+          });
+          writeProcess.events.on("erase/process", (bytesSent, expectedSize) => {
+            setStatus(`Erasing... ${bytesSent}/${expectedSize} bytes`);
+            if (expectedSize > 0) {
+              setProgress(bytesSent / expectedSize);
+            }
+          });
+          writeProcess.events.on("write/start", () => {
+            setStatus("Writing firmware...");
+            log(`Write started: ${totalBytes} bytes`);
+            setProgress(0);
+          });
+          writeProcess.events.on("write/process", (bytesSent, expectedSize) => {
+            const total = expectedSize || totalBytes;
+            setStatus(`Flashing... ${bytesSent}/${total} bytes`);
+            if (total > 0) {
+              setProgress(bytesSent / total);
+            }
+          });
+          writeProcess.events.on("verify", (status) => {
+            log(`Verify: state=${status.state} status=${status.status}`);
+          });
+          writeProcess.events.on("error", (error) => {
+            reject(error instanceof Error ? error : new Error(String(error)));
+          });
+          writeProcess.events.on("end", () => {
+            resolve();
+          });
+        });
+      }
+      async function flashFirmware() {
+        if (!state.webdfu || !state.connected) {
+          throw new Error("No device connected.");
+        }
+        const firmware = await readFirmwareBinary();
+        state.flashing = true;
+        updateControls();
+        setProgress(0);
+        const dfuStatus = await state.webdfu.getStatus();
+        if (dfuStatus.state === v.appIDLE) {
+          await reconnectInDfuMode();
+        }
+        const manifestationTolerant = state.webdfu.properties?.ManifestationTolerant !== false;
+        const transferSize = state.webdfu.properties?.TransferSize || 1024;
+        log(`Using device transfer size: ${transferSize} bytes`);
+        try {
+          setStatus(`Preparing DFU for ${firmware.name} (${firmware.bytes.length} bytes)...`);
+          log(`Starting flash using dfu package: ${firmware.name}`);
+          const writeProcess = state.webdfu.write(
             transferSize,
             firmwareToArrayBuffer(firmware.bytes),
-            manifestationTolerant,
-        );
-
-        await runWriteProcess(writeProcess, firmware.bytes.length);
-
-        setProgress(1);
-        await disconnectDevice();
-
-        setStatus("Flash complete. Device will reboot automatically.");
-        log("DFU flash completed successfully.");
-    } finally {
-        state.flashing = false;
+            manifestationTolerant
+          );
+          await runWriteProcess(writeProcess, firmware.bytes.length);
+          setProgress(1);
+          await disconnectDevice();
+          setStatus("Flash complete. Device will reboot automatically.");
+          log("DFU flash completed successfully.");
+        } finally {
+          state.flashing = false;
+          updateControls();
+        }
+      }
+      async function onConnectClick() {
+        try {
+          await connectDevice();
+        } catch (err) {
+          setStatus(err.message || "Failed to connect device.", "error");
+          log(`Connect failed: ${err.message || err}`);
+          updateControls();
+        }
+      }
+      async function onDisconnectClick() {
+        try {
+          await disconnectDevice();
+        } catch (err) {
+          setStatus(err.message || "Failed to disconnect device.", "error");
+          log(`Disconnect failed: ${err.message || err}`);
+        }
+      }
+      async function onFlashClick() {
+        try {
+          await flashFirmware();
+        } catch (err) {
+          setStatus(err.message || "DFU flash failed.", "error");
+          log(`Flash failed: ${err.message || err}`);
+          state.flashing = false;
+          updateControls();
+        }
+      }
+      function wireEvents() {
+        ui.connectBtn.addEventListener("click", onConnectClick);
+        ui.disconnectBtn.addEventListener("click", onDisconnectClick);
+        ui.flashBtn.addEventListener("click", onFlashClick);
+        ui.stableVersion.addEventListener("change", () => {
+          updateSelectedUrls();
+          updateControls();
+        });
+        ui.betaVersion.addEventListener("change", () => {
+          updateSelectedUrls();
+          updateControls();
+        });
+        ui.customFile.addEventListener("change", updateControls);
+        ui.tabs.stable.addEventListener("shown.bs.tab", updateControls);
+        ui.tabs.beta.addEventListener("shown.bs.tab", updateControls);
+        ui.tabs.custom.addEventListener("shown.bs.tab", updateControls);
+      }
+      function init() {
+        setSelectOptions(ui.stableVersion, STABLE_RELEASES);
+        setSelectOptions(ui.betaVersion, BETA_RELEASES);
+        updateSelectedUrls();
         updateControls();
+        setProgress(0);
+        log("Ready. Connect a device to begin.");
+      }
+      wireEvents();
+      init();
     }
-}
+  });
+  require_updater();
+})();
+/*! Bundled license information:
 
-async function onConnectClick() {
-    try {
-        await connectDevice();
-    } catch (err) {
-        setStatus(err.message || "Failed to connect device.", "error");
-        log(`Connect failed: ${err.message || err}`);
-        updateControls();
-    }
-}
-
-async function onDisconnectClick() {
-    try {
-        await disconnectDevice();
-    } catch (err) {
-        setStatus(err.message || "Failed to disconnect device.", "error");
-        log(`Disconnect failed: ${err.message || err}`);
-    }
-}
-
-async function onFlashClick() {
-    try {
-        await flashFirmware();
-    } catch (err) {
-        setStatus(err.message || "DFU flash failed.", "error");
-        log(`Flash failed: ${err.message || err}`);
-        state.flashing = false;
-        updateControls();
-    }
-}
-
-function wireEvents() {
-    ui.connectBtn.addEventListener("click", onConnectClick);
-    ui.disconnectBtn.addEventListener("click", onDisconnectClick);
-    ui.flashBtn.addEventListener("click", onFlashClick);
-
-    ui.latestChannel.addEventListener("change", applySelectedChannelUrl);
-
-    for (const input of ui.sourceModeInputs) {
-        input.addEventListener("change", updateSourceModeUI);
-    }
-
-    // navigator.usb?.addEventListener("disconnect", async (event) => {
-    //     if (state.device && event.device === state.device) {
-    //         log("USB disconnect event received.");
-    //         await disconnectDevice();
-    //     }
-    // });
-}
-
-function init() {
-    loadChannels();
-    updateSourceModeUI();
-    updateControls();
-    setProgress(0);
-    log("Ready. Connect a device to begin.");
-}
-
-wireEvents();
-init();
+dfu/dist/index.js:
+  (*! *****************************************************************************
+  Copyright (c) Microsoft Corporation.
+  
+  Permission to use, copy, modify, and/or distribute this software for any
+  purpose with or without fee is hereby granted.
+  
+  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+  REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+  INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+  LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+  PERFORMANCE OF THIS SOFTWARE.
+  ***************************************************************************** *)
+*/
+//# sourceMappingURL=updater.js.map

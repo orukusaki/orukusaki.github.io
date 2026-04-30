@@ -1,0 +1,28 @@
+{
+  "name": "orukusaki.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:js": "esbuild src/js/updater.js --bundle --platform=browser --format=iife --target=es2020 --sourcemap --outfile=static/js/updater.js",
+    "watch:js": "esbuild src/js/updater.js --bundle --platform=browser --format=iife --target=es2020 --sourcemap --outfile=static/js/updater.js --watch",
+    "build:site": "npm run build:js && zola build",
+    "serve": "npm run build:js && zola serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orukusaki/orukusaki.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/orukusaki/orukusaki.github.io/issues"
+  },
+  "homepage": "https://github.com/orukusaki/orukusaki.github.io#readme",
+  "dependencies": {
+    "dfu": "^0.1.5",
+    "esbuild": "^0.28.0"
+  }
+}
