@@ -10,7 +10,7 @@ compile_sass = true
 build_search_index = false
 
 title = "This Machine"
-description = "Eurorack Synthesizer Modules"
+description = "Homepage of This Machine Ltd, maker of Eurorack Synthesizer Modules"
 author = "This Machine Ltd"
 
 [markdown]
@@ -19,4 +19,4 @@ author = "This Machine Ltd"
 theme = "catppuccin-mocha"
 
 [extra]
-# Put all your custom variables here
+keywords = "This Machine, Quântica, eurorack, eurorack module, quantizer, sequencer, arpeggiator"

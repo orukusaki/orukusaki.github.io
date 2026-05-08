@@ -11,7 +11,8 @@
     {{ analytics::google_analytics() }}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="{{ config.description }}" />
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}" />
+    <meta name="keywords" content="{% if page.extra.keywords %} {{ page.extra.keywords }}{% else %}{{ config.extra.keywords }}{% endif %}" />
     <meta name="author" content="{{ config.author }}" />
     {% block title %}{{ head::title() }}{% endblock title %}
     <link rel="icon" type="image/x-icon" href="{{ get_url(path="assets/favicon.ico") }}" />
