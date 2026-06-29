@@ -548,7 +548,9 @@
   var require_updater = __commonJS({
     "src/js/updater.js"() {
       init_dist();
-      var STABLE_RELEASES = [];
+      var STABLE_RELEASES = [
+        { version: "1.0.1-stable", url: "/firmware/1.0.1-stable.bin" }
+      ];
       var BETA_RELEASES = [
         { version: "0.93.10-beta", url: "/firmware/0.93.10-beta.bin" }
       ];

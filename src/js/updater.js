@@ -1,6 +1,7 @@
 import { WebDFU, dfuCommands } from "dfu";
 
 const STABLE_RELEASES = [
+    { version: "1.0.1-stable", url: "/firmware/1.0.1-stable.bin" },
 ];
 
 const BETA_RELEASES = [
