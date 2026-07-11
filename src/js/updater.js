@@ -1,11 +1,11 @@
 import { WebDFU, dfuCommands } from "dfu";
 
 const STABLE_RELEASES = [
+    { version: "1.0.2-stable", url: "/firmware/1.0.2-stable.bin" },
     { version: "1.0.1-stable", url: "/firmware/1.0.1-stable.bin" },
 ];
 
 const BETA_RELEASES = [
-        { version: "1.0.2-beta", url: "/firmware/1.0.2-beta.bin" },
 ];
 
 const ui = {
