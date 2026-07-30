@@ -552,7 +552,9 @@
         { version: "1.0.2-stable", url: "/firmware/1.0.2-stable.bin" },
         { version: "1.0.1-stable", url: "/firmware/1.0.1-stable.bin" }
       ];
-      var BETA_RELEASES = [];
+      var BETA_RELEASES = [
+        { version: "1.0.3-beta", url: "/firmware/1.0.3-beta.bin" }
+      ];
       var ui = {
         connectBtn: document.getElementById("connectBtn"),
         disconnectBtn: document.getElementById("disconnectBtn"),

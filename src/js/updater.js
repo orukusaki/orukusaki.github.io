@@ -6,6 +6,7 @@ const STABLE_RELEASES = [
 ];
 
 const BETA_RELEASES = [
+    { version: "1.0.3-beta", url: "/firmware/1.0.3-beta.bin" },
 ];
 
 const ui = {
